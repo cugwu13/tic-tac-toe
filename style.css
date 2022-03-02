@@ -5,42 +5,61 @@
 }
 
 body {
+    background-color: black;
     height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
+}
+
+.container, .score {
+    font-size: 3.4rem;
+}
+
+.container, .score-container > span {
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
 }
 
 .container {
+    background-color: white;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 1fr;
-    gap: 1px;
-    width: 200px;
-    height: 200px;
+    gap: 6px;
+    width: 300px;
+    height: 300px;
 }
 
 .container > div {
-    border: 1px solid black;
+    background-color: black;
+    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: 900;
 }
 
 .game-over {
-    border: 2px solid black;
+    border: 4px solid white;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     width: 250px;
-    height: 200px;
-    padding: 20px;
-    position: fixed;
-    top: 20%;
+    height: 100px;
+    /* position: fixed;
+    top: 15%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); */
+}
+
+.game-over > p {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
 }
 
 .unclickable {
@@ -56,12 +75,26 @@ body {
     background-color: rgb(238, 71, 71);
     border: none;
     border-radius: 10px;
-    box-shadow: 2px 2px 2px lightgray;
+    font-size: 1rem;
     font-weight: bold;
-    padding: 20px;
+    padding: 8px 30px;
     transition: .1s;
 }
 
 #play-again:hover {
     filter: brightness(85%);
+}
+
+.score-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.score-container > span {
+    color: white;
+}
+
+.player-id {
+    font-size: 1.4rem;
 }

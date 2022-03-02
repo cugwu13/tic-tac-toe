@@ -1,4 +1,3 @@
-// Create gameBoard module (3 x 3 array)
 const gameBoard = (() => {
     const createBoard = () => {
         return new Array(
@@ -32,17 +31,18 @@ const gameBoard = (() => {
     return { createBoard, displayBoard, clearDisplayBoard, clearArrayBoard };
 })();
 
-// Create player factory
 const player = (selection) => {
     const marker = () => selection;
+    let score = 0;
 
-    return { marker };
+    return { marker, score };
 };
 
-// Create gameController module
 const gameController = (() => {
     const boardContainer = document.querySelector('.container');
     const gameOver = document.querySelector('.game-over');
+    let winner;
+    let moveCounter = 0;
     let board = gameBoard.createBoard();
     const updateBoard = (spot, marker) => {
         const position = Array.from(spot.dataset.position);
@@ -53,15 +53,19 @@ const gameController = (() => {
     const displayBoard = () => gameBoard.displayBoard();
     const getSelection = () => {
         let selection;
-        while (selection !== 'x' && selection !== 'o') {
+        while (!/x|o/i.test(selection)) {
             selection = prompt('X or O?');
         }
 
-        return selection;
+        return selection.toLowerCase();
     };
     let turn = 'player1';
     const player1 = player(getSelection());
     const player2 = player(player1.marker() === 'x' ? 'o' : 'x');
+    const updateScores = () => {
+        const scores = document.querySelector('.score');
+        scores.innerText = `${player1.score} - ${player2.score}`
+    }
     const loopTurns = spot => {
         if (spot.innerText !== '') {
             return;
@@ -75,6 +79,7 @@ const gameController = (() => {
             spot.innerText = player2.marker().toUpperCase();
             turn = 'player1';
         }
+        moveCounter++;
     };
     const checkThreeInRow = () => {
         const transposeBoard = (board) => {
@@ -121,25 +126,41 @@ const gameController = (() => {
                 if (totalO === 3) endGame('o');
             }
         };
-
         checkRowAndCol(board);
         const newBoard = transposeBoard(board);
         checkRowAndCol(newBoard);
         checkDiagonals(board);
     };
+    const checkTieGame = () => {
+        if (moveCounter === 9 && !winner) {
+            endGame('tie');
+        }
+    };
     const endGame = marker => {
-        // push .container to z-index = -1
         boardContainer.classList.add('unclickable');
-
-        const winnerText = player1.marker() === marker ? 'Player 1 wins!' : 'Player 2 wins!';
-
-        // pop up div with playerX wins text and play again button
+        let winnerText;
+        if (marker === 'tie') {
+            winnerText = 'Tie game!';
+        } else {
+            if (player1.marker() === marker) {
+                player1.score++;
+                winnerText = 'Player 1 wins!';
+                winner = 'player1'
+            } else {
+                player2.score++;
+                winnerText = 'Player 2 wins!';
+                winner = 'player2'
+            }
+        }
+        updateScores();
+        turn = 'player1';
+        winner = null;
+        moveCounter = 0;
+        
         gameOver.firstElementChild.innerText = winnerText;
         gameOver.classList.remove('invisible');
-
         const playAgain = document.querySelector('#play-again');
         playAgain.addEventListener('click', () => resetGame());
-
     };
     const executeClickEvent = () => {
         displayBoard();
@@ -147,6 +168,7 @@ const gameController = (() => {
         spots.forEach(spot => spot.addEventListener('click', () => {
             loopTurns(spot);
             checkThreeInRow();
+            checkTieGame();
         }));
     };
     const runGame = () => {
