@@ -53,7 +53,7 @@ const gameController = (() => {
     const displayBoard = () => gameBoard.displayBoard();
     const getSelection = () => {
         let selection;
-        while (!/x|o/i.test(selection)) {
+        while (selection !== 'x' && selection !== 'X' && selection !== 'o' && selection !== 'O') {
             selection = prompt('X or O?');
         }
 
